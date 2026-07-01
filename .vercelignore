@@ -1,0 +1,27 @@
+.git
+.gitignore
+node_modules
+npm-debug.log*
+.env.local
+.env.*.local
+dist
+.next
+.nuxt
+out
+build
+.cache
+.vuepress/dist
+.serverless/
+.fusebox/
+.dynamodb/
+.tern-port
+.vscode-test
+.yarn/cache
+.yarn/unplugged
+
+# Local development
+.DS_Store
+.env.development
+src/**/*.test.ts
+src/**/*.spec.ts
+**/*.stories.tsx
