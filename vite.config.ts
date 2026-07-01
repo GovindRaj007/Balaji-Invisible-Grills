@@ -10,6 +10,11 @@ export default defineConfig({
       // Provide our app's start/router entry files relative to the `src` directory.
       start: { entry: "entry/tanstack-start-virtual.ts" },
       router: { entry: "entry/tanstack-router-virtual.ts" },
+      prerender: {
+        enabled: true,
+        crawlLinks: true,
+        failOnError: true,
+      },
     }),
     tailwind(),
     react(),
