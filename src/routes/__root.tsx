@@ -15,7 +15,23 @@ import { Header, AnnouncementBar } from "../components/site/Header";
 import { Footer } from "../components/site/Footer";
 import { StickyCTA } from "../components/site/StickyCTA";
 import { BUSINESS } from "../data/business";
+import { getFullUrl } from "../config/site";
 import { organizationSchema, websiteSchema } from "../components/site/JsonLd";
+
+declare global {
+  interface Window {
+    dataLayer?: Array<Record<string, unknown>>;
+  }
+}
+
+const GTM_HEAD_SCRIPT = `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-P4PN9JFW');`;
+
+const GTM_NOSCRIPT = `<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P4PN9JFW"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>`;
 
 function NotFoundComponent() {
   return (
@@ -59,8 +75,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { name: "language", content: "en-IN" },
-      { name: "robots", content: "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" },
+      { name: "robots", content: "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" },
       { httpEquiv: "x-ua-compatible", content: "IE=edge" },
       { title: `${BUSINESS.name} | Invisible Grills & Safety Nets in Andhra Pradesh` },
       { name: "description", content: "Premium invisible grills, child & pet safety nets, cricket nets and ceiling cloth hangers installed across Visakhapatnam, Vijayawada, Rajahmundry, Guntur, Ongole, Tirupati & Anantapur. 10-year warranty." },
@@ -68,12 +83,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "theme-color", content: "#1a2540" },
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: BUSINESS.name },
-      { property: "og:image", content: "/og-image.jpg" },
+      { property: "og:image", content: getFullUrl("/og-image.jpg") },
       { property: "og:image:width", content: "1200" },
       { property: "og:image:height", content: "630" },
-      { property: "og:locale", content: "en_IN" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:image", content: "/og-image.jpg" },
+      { name: "twitter:image", content: getFullUrl("/og-image.jpg") },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
@@ -96,8 +110,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 function RootShell({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
-      <head><HeadContent /></head>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: GTM_HEAD_SCRIPT }} />
+        <HeadContent />
+      </head>
       <body>
+        <div dangerouslySetInnerHTML={{ __html: GTM_NOSCRIPT }} />
         {children}
         <Scripts />
       </body>
@@ -107,6 +125,35 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+
+  useEffect(() => {
+    const trackContactClick = (event: MouseEvent) => {
+      const target = event.target instanceof Element ? event.target : null;
+      const link = target?.closest("a[href]") as HTMLAnchorElement | null;
+      if (!link) return;
+
+      const href = link.getAttribute("href") ?? "";
+      let contactType: "call" | "whatsapp" | null = null;
+
+      if (href.startsWith("tel:")) {
+        contactType = "call";
+      } else if (href.includes("wa.me") || href.includes("api.whatsapp.com")) {
+        contactType = "whatsapp";
+      }
+
+      if (!contactType || typeof window === "undefined") return;
+
+      window.dataLayer?.push({
+        event: "contact_click",
+        contact_type: contactType,
+        href,
+      });
+    };
+
+    document.addEventListener("click", trackContactClick, true);
+    return () => document.removeEventListener("click", trackContactClick, true);
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <AnnouncementBar />

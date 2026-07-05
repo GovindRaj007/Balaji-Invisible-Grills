@@ -1,8 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { BUSINESS, SERVICES } from "@/data/business";
-import { SERVICE_IMAGES } from "@/data/images";
+import { SERVICE_IMAGE_SOURCES } from "@/data/images";
 import { Breadcrumbs, CTASection } from "@/components/site/Sections";
+import { OptimizedImage } from "@/components/ui/optimized-image";
 import { generateSEOMeta } from "@/lib/seo";
 import { getFullUrl } from "@/config/site";
 
@@ -10,7 +11,20 @@ export const Route = createFileRoute("/services/")({
   head: () => {
     const title = `Services | Invisible Grills, Safety Nets, Cricket Nets | ${BUSINESS.name}`;
     const description = `Professional installation of 316L invisible grills, child & pet safety nets, cricket nets, and ceiling cloth hangers across Visakhapatnam, Vijayawada, Rajahmundry, Guntur, Ongole, Tirupati & Anantapur.`;
-    const keywords = ["services", "invisible grills", "safety nets", "cricket nets", "cloth hangers", "installation", "balcony safety"];
+    const keywords = [
+      "invisible grills",
+      "invisible grill installation",
+      "safety nets",
+      "child safety nets",
+      "cricket nets",
+      "cricket practice nets",
+      "box cricket nets installation",
+      "sports net installation",
+      "balcony safety nets",
+      "ceiling cloth hanger",
+      "ceiling mounted cloth drying hanger",
+      "cloth drying hanger installation",
+    ];
     
     return {
       ...generateSEOMeta({
@@ -39,7 +53,14 @@ function ServicesIndex() {
         {SERVICES.map((s) => (
           <Link key={s.slug} to="/services/$service" params={{ service: s.slug }} className="card-surface group !p-0 overflow-hidden">
             <div className="aspect-[16/9] relative overflow-hidden">
-              <img src={SERVICE_IMAGES[s.slug]} alt={s.name} loading="lazy" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+              <OptimizedImage
+                avifSrc={SERVICE_IMAGE_SOURCES[s.slug].avif}
+                webpSrc={SERVICE_IMAGE_SOURCES[s.slug].webp}
+                fallbackSrc={SERVICE_IMAGE_SOURCES[s.slug].jpg}
+                alt={s.name}
+                loading="lazy"
+                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
               <div className="absolute inset-0 bg-gradient-to-t from-primary/70 via-primary/10 to-transparent" />
               <div className="absolute bottom-4 left-4 chip !bg-white/15 !text-white !border-white/25 backdrop-blur">{s.name}</div>
             </div>

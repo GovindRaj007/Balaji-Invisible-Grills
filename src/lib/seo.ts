@@ -16,8 +16,10 @@ export interface SEOConfig {
 }
 
 export function generateSEOMeta(config: SEOConfig) {
-  const keywords = [...(config.keywords || []), ...SITE_CONFIG.globalKeywords].join(", ");
-  const ogImage = config.ogImage || SITE_CONFIG.ogImages.default;
+  const keywords = (config.keywords && config.keywords.length ? config.keywords : SITE_CONFIG.globalKeywords).join(", ");
+  // Prefer an absolute URL for Open Graph images so previews resolve reliably
+  const rawOg = config.ogImage || SITE_CONFIG.ogImages.default;
+  const ogImage = rawOg.startsWith("/") ? getFullUrl(rawOg) : rawOg;
   const canonical = config.canonical || SITE_CONFIG.siteUrl;
   
   return {

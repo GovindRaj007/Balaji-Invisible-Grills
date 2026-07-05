@@ -1,17 +1,75 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { lazy, Suspense, useEffect, useRef, useState, type ReactNode } from "react";
 import { ArrowRight, CheckCircle2, Phone, ShieldCheck, Sparkles, Star, Wrench } from "lucide-react";
 import { WhatsAppIcon } from "@/components/ui/whatsapp-icon";
 import { BUSINESS, LOCATIONS, SERVICES, BLOG_POSTS } from "@/data/business";
-import { HERO_IMAGE, SERVICE_IMAGES } from "@/data/images";
-import { CTASection, FAQ, ServiceAreasGrid, Testimonials, TrustIndicators } from "@/components/site/Sections";
+import { HERO_IMAGE_SOURCES, SERVICE_IMAGE_SOURCES } from "@/data/images";
+import { TrustIndicators } from "@/components/site/Sections";
 import { SITE_CONFIG, getFullUrl } from "@/config/site";
 import { organizationSchema, websiteSchema } from "@/components/site/JsonLd";
+import { OptimizedImage } from "@/components/ui/optimized-image";
+
+const LazyServiceAreasGrid = lazy(() => import("@/components/site/Sections").then((module) => ({ default: module.ServiceAreasGrid })));
+const LazyTestimonials = lazy(() => import("@/components/site/Sections").then((module) => ({ default: module.Testimonials })));
+const LazyFAQ = lazy(() => import("@/components/site/Sections").then((module) => ({ default: module.FAQ })));
+const LazyCTASection = lazy(() => import("@/components/site/Sections").then((module) => ({ default: module.CTASection })));
+
+function DeferredSection({ children, fallback = null }: { children: ReactNode; fallback?: ReactNode }) {
+  const [isVisible, setIsVisible] = useState(false);
+  const ref = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const node = ref.current;
+    if (!node) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "250px 0px" }
+    );
+
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+
+  return <div ref={ref}>{isVisible ? children : fallback}</div>;
+}
 
 export const Route = createFileRoute("/")({
   head: () => {
-    const title = "Balaji Invisible Grills | Premium Safety Nets, Grills & Cricket Nets in Andhra Pradesh";
-    const description = "Andhra Pradesh's #1 installer of 316L invisible grills, safety nets & cricket nets. 6500+ installations, 10-year warranty, free site visits. Serving Visakhapatnam, Vijayawada, Rajahmundry, Guntur, Ongole, Tirupati & Anantapur.";
-    const keywords = "invisible grills, safety nets, cricket nets, balcony safety, window safety, Visakhapatnam, Vijayawada, Rajahmundry, Guntur, Ongole, Tirupati, Anantapur, stainless steel, child safety";
+    const title = "Andhra Pradesh's Best Invisible Grills, Safety Nets & Cricket Nets | Balaji Invisible Grills";
+    const description = "Balaji Invisible Grills installs premium invisible grills, balcony safety nets, cricket nets and ceiling cloth hangers across Vizag, Vijayawada, Rajahmundry, Guntur, Ongole, Tirupati and Anantapur. Free site visit, transparent quote and 10-year warranty.";
+    const keywords = [
+      "invisible grills",
+      "invisible grill installation",
+      "invisible grill installation near me",
+      "invisible grill for balcony in vijayawada",
+      "balcony invisible grills in guntur",
+      "invisible grills for balcony in visakhapatnam",
+      "invisible grills in vizag",
+      "invisible grills tirupati",
+      "invisible grills ongole",
+      "ss316 invisible grills",
+      "invisible grill near me",
+      "invisible grill fitting near me",
+      "ceiling cloth hanger",
+      "ceiling mounted cloth drying hanger",
+      "cloth drying hanger installation",
+      "cricket nets",
+      "cricket practice nets",
+      "box cricket nets installation",
+      "sports net installation",
+      "box cricket turf installation",
+      "balcony safety nets",
+      "child safety nets",
+      "pigeon nets",
+      "pigeon nets for balcony",
+      "duct area nets",
+    ].join(", ");
     
     return {
       meta: [
@@ -25,14 +83,14 @@ export const Route = createFileRoute("/")({
         { property: "og:title", content: title },
         { property: "og:description", content: description },
         { property: "og:url", content: getFullUrl("/") },
-        { property: "og:image", content: SITE_CONFIG.ogImages.default },
+        { property: "og:image", content: getFullUrl(SITE_CONFIG.ogImages.default) },
         { property: "og:image:width", content: "1200" },
         { property: "og:image:height", content: "630" },
         // Twitter Card
         { name: "twitter:card", content: "summary_large_image" },
         { name: "twitter:title", content: title },
         { name: "twitter:description", content: description },
-        { name: "twitter:image", content: SITE_CONFIG.ogImages.default },
+        { name: "twitter:image", content: getFullUrl(SITE_CONFIG.ogImages.default) },
         // Additional SEO
         { name: "viewport", content: "width=device-width, initial-scale=1" },
         { name: "author", content: SITE_CONFIG.businessName },
@@ -40,6 +98,8 @@ export const Route = createFileRoute("/")({
       ],
       links: [
         { rel: "canonical", href: getFullUrl("/") },
+        { rel: "preload", as: "image", href: HERO_IMAGE_SOURCES.avif, type: "image/avif", fetchPriority: "high" },
+        { rel: "preload", as: "image", href: HERO_IMAGE_SOURCES.webp, type: "image/webp", fetchPriority: "high" },
       ],
       scripts: [
         {
@@ -83,7 +143,19 @@ function HomePage() {
             <div className="rounded-3xl shadow-2xl overflow-hidden border border-border/50">
               {/* Card Background Image */}
               <div className="relative">
-                <img src={HERO_IMAGE} alt="Premium invisible grill on a high-rise apartment balcony in Andhra Pradesh" width={1280} height={1600} className="w-full h-[400px] md:h-[500px] object-cover" />
+                <OptimizedImage
+                  avifSrc={HERO_IMAGE_SOURCES.avif}
+                  webpSrc={HERO_IMAGE_SOURCES.webp}
+                  fallbackSrc={HERO_IMAGE_SOURCES.jpg}
+                  alt="Premium invisible grill on a high-rise apartment balcony in Andhra Pradesh"
+                  width={1280}
+                  height={1600}
+                  loading="eager"
+                  decoding="async"
+                  fetchPriority="high"
+                  sizes="(max-width: 1023px) 100vw, 50vw"
+                  className="w-full h-[400px] md:h-[500px] object-cover"
+                />
                 <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/40 to-primary/10" />
 
                 {/* Content Overlay on Image */}
@@ -185,7 +257,19 @@ function HomePage() {
             {/* Right Column: Image Card */}
             <div>
               <div className="rounded-3xl shadow-2xl overflow-hidden border border-border/50 relative">
-                <img src={HERO_IMAGE} alt="Premium invisible grill on a high-rise apartment balcony in Andhra Pradesh" width={1280} height={1600} className="w-full h-[600px] object-cover" />
+                <OptimizedImage
+                  avifSrc={HERO_IMAGE_SOURCES.avif}
+                  webpSrc={HERO_IMAGE_SOURCES.webp}
+                  fallbackSrc={HERO_IMAGE_SOURCES.jpg}
+                  alt="Premium invisible grill on a high-rise apartment balcony in Andhra Pradesh"
+                  width={1280}
+                  height={1600}
+                  loading="eager"
+                  decoding="async"
+                  fetchPriority="high"
+                  sizes="(min-width: 1024px) 50vw, 100vw"
+                  className="w-full h-[600px] object-cover"
+                />
                 <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/40 to-primary/10" />
 
                 {/* Badge Over Image - Bottom Position */}
@@ -215,7 +299,15 @@ function HomePage() {
             {SERVICES.map((s) => (
               <Link key={s.slug} to="/services/$service" params={{ service: s.slug }} className="card-surface group !p-0 overflow-hidden">
                 <div className="aspect-[16/8] relative overflow-hidden">
-                  <img src={SERVICE_IMAGES[s.slug]} alt={s.name} loading="lazy" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  <OptimizedImage
+                    avifSrc={SERVICE_IMAGE_SOURCES[s.slug].avif}
+                    webpSrc={SERVICE_IMAGE_SOURCES[s.slug].webp}
+                    fallbackSrc={SERVICE_IMAGE_SOURCES[s.slug].jpg}
+                    alt={s.name}
+                    loading="lazy"
+                    decoding="async"
+                    className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
                   <div className="absolute inset-0 bg-gradient-to-t from-primary/70 via-primary/10 to-transparent" />
                   <div className="absolute top-4 left-4 chip !bg-white/15 !text-white !border-white/25 backdrop-blur">{s.name}</div>
                 </div>
@@ -276,9 +368,17 @@ function HomePage() {
         </div>
       </section>
 
-      <ServiceAreasGrid />
+      <DeferredSection>
+        <Suspense fallback={null}>
+          <LazyServiceAreasGrid />
+        </Suspense>
+      </DeferredSection>
 
-      <Testimonials />
+      <DeferredSection>
+        <Suspense fallback={null}>
+          <LazyTestimonials />
+        </Suspense>
+      </DeferredSection>
 
       {/* BLOG */}
       <section className="pt-[64px]">
@@ -302,8 +402,16 @@ function HomePage() {
         </div>
       </section>
 
-      <FAQ faqs={homeFaqs} />
-      <CTASection />
+      <DeferredSection>
+        <Suspense fallback={null}>
+          <LazyFAQ faqs={homeFaqs} />
+        </Suspense>
+      </DeferredSection>
+      <DeferredSection>
+        <Suspense fallback={null}>
+          <LazyCTASection />
+        </Suspense>
+      </DeferredSection>
     </>
   );
 }

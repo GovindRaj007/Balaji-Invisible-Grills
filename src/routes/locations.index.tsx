@@ -10,7 +10,19 @@ export const Route = createFileRoute("/locations/")({
     const locationNames = LOCATIONS.map(l => l.name).join(", ");
     const title = `Service Locations | ${BUSINESS.name} — Andhra Pradesh`;
     const description = `Premium invisible grills, safety nets, cricket nets & cloth hangers installation across ${locationNames}. Local teams, free site visits, 10-year warranty.`;
-    const keywords = ["locations", "service areas", "cities", ...LOCATIONS.map(l => l.name), "Andhra Pradesh"];
+    const keywords = [
+      "service locations",
+      "invisible grills in Visakhapatnam",
+      "invisible grills in Vijayawada",
+      "invisible grills in Rajahmundry",
+      "invisible grills in Guntur",
+      "invisible grills in Ongole",
+      "invisible grills in Tirupati",
+      "invisible grills in Anantapur",
+      "safety nets in Andhra Pradesh",
+      "cricket nets in Andhra Pradesh",
+      "ceiling cloth hangers in Andhra Pradesh",
+    ];
     
     return {
       ...generateSEOMeta({

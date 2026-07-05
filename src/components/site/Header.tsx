@@ -2,7 +2,8 @@ import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { ChevronDown, Menu, Phone } from "lucide-react";
 import { BUSINESS, SERVICES, LOCATIONS } from "@/data/business";
-import { HERO_IMAGE, LOGO_IMAGE } from "@/data/images";
+import { HERO_IMAGE_SOURCES, LOGO_IMAGE_SOURCES } from "@/data/images";
+import { OptimizedImage } from "@/components/ui/optimized-image";
 import {
   Drawer,
   DrawerContent,
@@ -33,7 +34,18 @@ export function Header() {
     <header className="sticky top-0 z-40 backdrop-blur-xl bg-background/80 border-b border-border">
       <div className="container-x flex items-center justify-between h-16 md:h-20">
         <Link to="/" className="flex items-center gap-2.5 group hover:opacity-80 transition-opacity">
-          <img src={LOGO_IMAGE} alt="Balaji Invisible Grills Logo" className="h-16 md:h-18 w-auto" />
+          <OptimizedImage
+            avifSrc={LOGO_IMAGE_SOURCES.avif}
+            webpSrc={LOGO_IMAGE_SOURCES.webp}
+            fallbackSrc={LOGO_IMAGE_SOURCES.jpg}
+            alt="Balaji Invisible Grills Logo"
+            width={80}
+            height={80}
+            loading="eager"
+            decoding="async"
+            fetchPriority="high"
+            className="h-16 md:h-18 w-auto"
+          />
         </Link>
 
         <nav className="hidden lg:flex items-center gap-1 text-sm font-medium">
@@ -83,7 +95,15 @@ export function Header() {
             <DrawerContent className="border-t border-white/10 rounded-t-3xl p-0 overflow-hidden h-[80vh]">
               {/* Background with Image and Gradient Overlay */}
               <div className="absolute inset-0">
-                <img src={HERO_IMAGE} alt="" className="w-full h-full object-cover" loading="lazy" />
+                <OptimizedImage
+                  avifSrc={HERO_IMAGE_SOURCES.avif}
+                  webpSrc={HERO_IMAGE_SOURCES.webp}
+                  fallbackSrc={HERO_IMAGE_SOURCES.jpg}
+                  alt="Invisible grill installation for mobile navigation background"
+                  className="absolute inset-0 w-full h-full object-cover"
+                  loading="lazy"
+                  decoding="async"
+                />
                 <div className="absolute inset-0 bg-gradient-to-br from-foreground/70 via-foreground/65 to-primary/60" />
               </div>
 

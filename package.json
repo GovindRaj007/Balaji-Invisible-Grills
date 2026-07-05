@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite dev",
-    "build": "vite build",
+    "build": "vite build && node scripts/check-build-budgets.js",
+    "optimize:images": "node scripts/optimize-images.mjs",
+    "check:budget": "node scripts/check-build-budgets.js",
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
     "lint": "eslint .",
@@ -79,6 +81,7 @@
     "globals": "^15.15.0",
     "nitro": "3.0.260603-beta",
     "prettier": "^3.7.3",
+    "sharp": "^0.35.3",
     "terser": "^5.48.0",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.56.1",

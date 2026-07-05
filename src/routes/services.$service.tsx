@@ -2,7 +2,8 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowRight, CheckCircle2, Phone, ShieldCheck } from "lucide-react";
 import { WhatsAppIcon } from "@/components/ui/whatsapp-icon";
 import { BUSINESS, LOCATIONS, SERVICES, type ServiceSlug } from "@/data/business";
-import { SERVICE_GALLERY_IMAGES, SERVICE_IMAGES } from "@/data/images";
+import { SERVICE_GALLERY_IMAGES, SERVICE_IMAGE_SOURCES } from "@/data/images";
+import { OptimizedImage } from "@/components/ui/optimized-image";
 import {
   Breadcrumbs, CTASection, FAQ, FeatureList, Gallery,
   RelatedServices, ServiceAreasGrid, Testimonials,
@@ -39,13 +40,13 @@ export const Route = createFileRoute("/services/$service")({
         { property: "og:title", content: title },
         { property: "og:description", content: description },
         { property: "og:url", content: getFullUrl(`/services/${params.service}`) },
-        { property: "og:image", content: SITE_CONFIG.ogImages.service },
+        { property: "og:image", content: getFullUrl(SITE_CONFIG.ogImages.service) },
         { property: "og:image:width", content: "1200" },
         { property: "og:image:height", content: "630" },
         { name: "twitter:card", content: "summary_large_image" },
         { name: "twitter:title", content: title },
         { name: "twitter:description", content: description },
-        { name: "twitter:image", content: SITE_CONFIG.ogImages.service },
+        { name: "twitter:image", content: getFullUrl(SITE_CONFIG.ogImages.service) },
         { name: "viewport", content: "width=device-width, initial-scale=1" },
         { name: "author", content: SITE_CONFIG.businessName },
         { name: "robots", content: "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" },
@@ -101,7 +102,16 @@ function ServicePage() {
           </div>
         </div>
         <div className="aspect-[4/5] rounded-3xl shadow-2xl relative overflow-hidden">
-          <img src={SERVICE_IMAGES[slug]} alt={s.name} className="absolute inset-0 w-full h-full object-cover" />
+          <OptimizedImage
+            avifSrc={SERVICE_IMAGE_SOURCES[slug].avif}
+            webpSrc={SERVICE_IMAGE_SOURCES[slug].webp}
+            fallbackSrc={SERVICE_IMAGE_SOURCES[slug].jpg}
+            alt={s.name}
+            loading="eager"
+            decoding="async"
+            fetchPriority="high"
+            className="absolute inset-0 w-full h-full object-cover"
+          />
           <div className="absolute inset-0 bg-gradient-to-t from-primary/70 via-primary/10 to-transparent" />
           <div className="absolute bottom-6 left-6 right-6 bg-background/95 backdrop-blur rounded-2xl p-5 border border-border">
             <div className="text-xs font-semibold text-accent uppercase tracking-wider">Free site visit</div>

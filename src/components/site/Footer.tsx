@@ -1,7 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { Mail, MapPin, Phone } from "lucide-react";
 import { BUSINESS, LOCATIONS, SERVICES } from "@/data/business";
-import { LOGO_IMAGE } from "@/data/images";
+import { OptimizedImage } from "@/components/ui/optimized-image";
+import { LOGO_IMAGE_SOURCES } from "@/data/images";
 
 export function Footer() {
   return (
@@ -9,7 +10,13 @@ export function Footer() {
       <div className="container-x py-16 grid md:grid-cols-4 gap-10">
         <div>
           <div className="mb-6 inline-flex items-center justify-center rounded-2xl bg-white/95 p-3 shadow-sm">
-            <img src={LOGO_IMAGE} alt="Balaji Invisible Grills Logo" className="h-15 w-auto" />
+            <OptimizedImage
+              avifSrc={LOGO_IMAGE_SOURCES.avif}
+              webpSrc={LOGO_IMAGE_SOURCES.webp}
+              fallbackSrc={LOGO_IMAGE_SOURCES.jpg}
+              alt="Balaji Invisible Grills Logo"
+              className="h-15 w-auto"
+            />
           </div>
           <p className="text-sm opacity-80 leading-relaxed">
             Andhra Pradesh's trusted name for invisible grills, child & pet safety nets, cricket nets and ceiling cloth hangers — installed by certified specialists, backed by 10-year warranty.

@@ -48,8 +48,8 @@ export default defineConfig({
         },
       },
     },
-    // Optimize chunk sizes
-    chunkSizeWarningLimit: 1000,
+    // Optimize chunk sizes with a strict warning threshold to catch regressions early
+    chunkSizeWarningLimit: 250,
     minify: "terser",
   },
 });

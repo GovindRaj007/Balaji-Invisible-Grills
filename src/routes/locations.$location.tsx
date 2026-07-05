@@ -15,15 +15,21 @@ export const Route = createFileRoute("/locations/$location")({
     if (!loaderData) return {};
     const l = loaderData.loc;
     const title = `Invisible Grills, Safety Nets & Cricket Nets in ${l.name} | ${SITE_CONFIG.businessName}`;
-    const description = `Premium invisible grills, safety nets, cricket nets & cloth hangers installation in ${l.name}. Local team, free site visit, 10-year warranty, transparent pricing.`;
+    const description = `Premium invisible grills, safety nets, cricket nets & cloth hangers installation in ${l.name}. Local teams, free site visits, transparent quotes, and 10-year warranty.`;
     const keywords = [
       `invisible grills in ${l.name}`,
+      `invisible grill for balcony in ${l.name}`,
+      `balcony invisible grills in ${l.name}`,
+      `window invisible grills in ${l.name}`,
       `safety nets in ${l.name}`,
-      `balcony safety ${l.name}`,
-      `cricket nets ${l.name}`,
-      `cloth hangers ${l.name}`,
-      `${l.name} safety installation`,
-      "installation services",
+      `balcony safety nets in ${l.name}`,
+      `child safety nets in ${l.name}`,
+      `pigeon nets in ${l.name}`,
+      `cricket nets in ${l.name}`,
+      `cricket practice nets in ${l.name}`,
+      `sports net installation in ${l.name}`,
+      `ceiling cloth hanger in ${l.name}`,
+      `duct area nets in ${l.name}`,
     ];
     
     return {
@@ -37,13 +43,13 @@ export const Route = createFileRoute("/locations/$location")({
         { property: "og:title", content: title },
         { property: "og:description", content: description },
         { property: "og:url", content: getFullUrl(`/locations/${params.location}`) },
-        { property: "og:image", content: SITE_CONFIG.ogImages.locations },
+        { property: "og:image", content: getFullUrl(SITE_CONFIG.ogImages.locations) },
         { property: "og:image:width", content: "1200" },
         { property: "og:image:height", content: "630" },
         { name: "twitter:card", content: "summary_large_image" },
         { name: "twitter:title", content: title },
         { name: "twitter:description", content: description },
-        { name: "twitter:image", content: SITE_CONFIG.ogImages.locations },
+        { name: "twitter:image", content: getFullUrl(SITE_CONFIG.ogImages.locations) },
         { name: "viewport", content: "width=device-width, initial-scale=1" },
         { name: "author", content: SITE_CONFIG.businessName },
         { name: "robots", content: "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" },

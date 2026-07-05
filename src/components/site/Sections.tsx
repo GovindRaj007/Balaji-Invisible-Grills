@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "@tanstack/react-router";
 import { ChevronRight, Phone, ShieldCheck, Star, CheckCircle2 } from "lucide-react";
+import { OptimizedImage } from "@/components/ui/optimized-image";
 import { WhatsAppIcon } from "@/components/ui/whatsapp-icon";
 import { BUSINESS, LOCATIONS, SERVICES } from "@/data/business";
 
@@ -181,8 +182,14 @@ export function FeatureList({ items, title }: { items: string[]; title?: string 
   );
 }
 
-export function Gallery({ caption, images, count }: { caption?: string; images: string[]; count?: number }) {
-  const [selectedImage, setSelectedImage] = React.useState<string | null>(null);
+export type ImageSource = {
+  avif: string;
+  webp: string;
+  jpg: string;
+};
+
+export function Gallery({ caption, images, count }: { caption?: string; images: ImageSource[]; count?: number }) {
+  const [selectedImage, setSelectedImage] = React.useState<ImageSource | null>(null);
   const displayImages = typeof count === "number" ? images.slice(0, count) : images;
 
   return (
@@ -192,9 +199,17 @@ export function Gallery({ caption, images, count }: { caption?: string; images: 
         <h2 className="font-display text-3xl md:text-4xl mt-2 mb-2">See our work in action</h2>
         {caption && <p className="text-muted-foreground max-w-2xl mb-8">{caption}</p>}
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
-          {displayImages.map((src, i) => (
-            <div key={i} className="aspect-[4/3] rounded-2xl relative overflow-hidden group cursor-pointer" onClick={() => setSelectedImage(src)}>
-              <img src={src} alt={`Installation by ${BUSINESS.shortName} #${1000 + i}`} loading="lazy" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+          {displayImages.map((image, i) => (
+            <div key={i} className="aspect-[4/3] rounded-2xl relative overflow-hidden group cursor-pointer" onClick={() => setSelectedImage(image)}>
+              <OptimizedImage
+                avifSrc={image.avif}
+                webpSrc={image.webp}
+                fallbackSrc={image.jpg}
+                alt={`Installation by ${BUSINESS.shortName} #${1000 + i}`}
+                loading="lazy"
+                decoding="async"
+                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
             </div>
           ))}
         </div>
@@ -204,7 +219,15 @@ export function Gallery({ caption, images, count }: { caption?: string; images: 
       {selectedImage && (
         <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4" onClick={() => setSelectedImage(null)}>
           <div className="relative max-w-4xl w-full" onClick={(e) => e.stopPropagation()}>
-            <img src={selectedImage} alt="Full view" className="w-full h-auto rounded-lg" />
+            <OptimizedImage
+              avifSrc={selectedImage.avif}
+              webpSrc={selectedImage.webp}
+              fallbackSrc={selectedImage.jpg}
+              alt="Full view"
+              className="w-full h-auto rounded-lg"
+              loading="eager"
+              decoding="async"
+            />
             <button
               onClick={() => setSelectedImage(null)}
               className="absolute top-4 right-4 bg-white/10 hover:bg-white/20 text-white p-2 rounded-lg transition-colors"

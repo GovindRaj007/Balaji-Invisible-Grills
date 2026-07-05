@@ -1,5 +1,6 @@
 // Helper not used as a component — kept here for shared schema generators.
 import { BUSINESS, LOCATIONS, SERVICES } from "@/data/business";
+import { getFullUrl } from "@/config/site";
 
 export function organizationSchema() {
   return {
@@ -7,7 +8,7 @@ export function organizationSchema() {
     "@type": "LocalBusiness",
     "@id": "/#organization",
     name: BUSINESS.name,
-    image: "/og-image.jpg",
+    image: getFullUrl("/og-image.jpg"),
     telephone: [BUSINESS.phone, BUSINESS.secondaryPhone],
     email: BUSINESS.email,
     address: {
@@ -34,7 +35,7 @@ export function websiteSchema() {
     "@context": "https://schema.org",
     "@type": "WebSite",
     name: BUSINESS.name,
-    url: "/",
+    url: getFullUrl("/"),
   };
 }
 
