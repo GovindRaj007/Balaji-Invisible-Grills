@@ -18,12 +18,6 @@ import { BUSINESS } from "../data/business";
 import { getFullUrl } from "../config/site";
 import { organizationSchema, websiteSchema } from "../components/site/JsonLd";
 
-declare global {
-  interface Window {
-    dataLayer?: Array<Record<string, unknown>>;
-  }
-}
-
 const GTM_HEAD_SCRIPT = `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
 j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
@@ -32,6 +26,13 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
 const GTM_NOSCRIPT = `<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P4PN9JFW"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>`;
+
+const GOOGLE_ADS_GTAG_SNIPPET = `
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = window.gtag || function(){ window.dataLayer.push(arguments); };
+  window.gtag('js', new Date());
+  window.gtag('config', 'AW-18296003918');
+`;
 
 function NotFoundComponent() {
   return (
@@ -112,6 +113,8 @@ function RootShell({ children }: { children: ReactNode }) {
     <html lang="en">
       <head>
         <script dangerouslySetInnerHTML={{ __html: GTM_HEAD_SCRIPT }} />
+        <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18296003918" />
+        <script dangerouslySetInnerHTML={{ __html: GOOGLE_ADS_GTAG_SNIPPET }} />
         <HeadContent />
       </head>
       <body>
@@ -125,35 +128,6 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
-
-  useEffect(() => {
-    const trackContactClick = (event: MouseEvent) => {
-      const target = event.target instanceof Element ? event.target : null;
-      const link = target?.closest("a[href]") as HTMLAnchorElement | null;
-      if (!link) return;
-
-      const href = link.getAttribute("href") ?? "";
-      let contactType: "call" | "whatsapp" | null = null;
-
-      if (href.startsWith("tel:")) {
-        contactType = "call";
-      } else if (href.includes("wa.me") || href.includes("api.whatsapp.com")) {
-        contactType = "whatsapp";
-      }
-
-      if (!contactType || typeof window === "undefined") return;
-
-      window.dataLayer?.push({
-        event: "contact_click",
-        contact_type: contactType,
-        href,
-      });
-    };
-
-    document.addEventListener("click", trackContactClick, true);
-    return () => document.removeEventListener("click", trackContactClick, true);
-  }, []);
-
   return (
     <QueryClientProvider client={queryClient}>
       <AnnouncementBar />
