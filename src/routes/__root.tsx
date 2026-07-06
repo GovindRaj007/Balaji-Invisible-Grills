@@ -18,22 +18,6 @@ import { BUSINESS } from "../data/business";
 import { getFullUrl } from "../config/site";
 import { organizationSchema, websiteSchema } from "../components/site/JsonLd";
 
-const GTM_HEAD_SCRIPT = `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-P4PN9JFW');`;
-
-const GTM_NOSCRIPT = `<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P4PN9JFW"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>`;
-
-const GOOGLE_ADS_GTAG_SNIPPET = `
-  window.dataLayer = window.dataLayer || [];
-  window.gtag = window.gtag || function(){ window.dataLayer.push(arguments); };
-  window.gtag('js', new Date());
-  window.gtag('config', 'AW-18296003918');
-`;
-
 function NotFoundComponent() {
   return (
     <div className="flex min-h-[70vh] items-center justify-center bg-background px-4">
@@ -111,14 +95,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 function RootShell({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: GTM_HEAD_SCRIPT }} />
-        <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18296003918" />
-        <script dangerouslySetInnerHTML={{ __html: GOOGLE_ADS_GTAG_SNIPPET }} />
-        <HeadContent />
-      </head>
+      <head><HeadContent /></head>
       <body>
-        <div dangerouslySetInnerHTML={{ __html: GTM_NOSCRIPT }} />
         {children}
         <Scripts />
       </body>
