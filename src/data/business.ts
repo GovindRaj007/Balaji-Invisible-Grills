@@ -7,7 +7,7 @@ export const BUSINESS = {
   secondaryPhone: "+919110323811",
   secondaryPhoneDisplay: "+91 91103 23811",
   whatsapp: "919573433063",
-  email: "enquiry@balajisafetynets.in",
+  email: "balajisecuresolutions@gmail.com",
   branchName: "Main branch",
   streetAddress: "61-22/1-25A, Gulabi Rd, Satya Narayana Nagar, Krishna Lanka",
   addressLocality: "Vijayawada",
