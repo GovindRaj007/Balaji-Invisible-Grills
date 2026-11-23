@@ -155,7 +155,7 @@ export function RelatedServices({ exclude }: { exclude?: string }) {
           {SERVICES.filter((s) => s.slug !== exclude).slice(0, 3).map((s) => (
             <Link key={s.slug} to="/services/$service" params={{ service: s.slug }} className="card-surface group">
               <div className="flex items-center gap-2 text-accent text-sm font-semibold"><ShieldCheck className="size-4" /> Service</div>
-              <h3 className="font-display text-xl mt-2">{s.name}</h3>
+              <h3 className="font-display text-xl mt-2">{s.keyword}</h3>
               <p className="text-sm text-muted-foreground mt-2">{s.short}</p>
               <span className="mt-4 inline-flex text-sm text-accent font-semibold group-hover:gap-2 transition-all">Learn more <ChevronRight className="size-4" /></span>
             </Link>
@@ -188,7 +188,7 @@ export type ImageSource = {
   jpg: string;
 };
 
-export function Gallery({ caption, images, count }: { caption?: string; images: ImageSource[]; count?: number }) {
+export function Gallery({ caption, images, count, altPrefix = "Balcony safety installation" }: { caption?: string; images: ImageSource[]; count?: number; altPrefix?: string }) {
   const [selectedImage, setSelectedImage] = React.useState<ImageSource | null>(null);
   const displayImages = typeof count === "number" ? images.slice(0, count) : images;
 
@@ -205,7 +205,7 @@ export function Gallery({ caption, images, count }: { caption?: string; images: 
                 avifSrc={image.avif}
                 webpSrc={image.webp}
                 fallbackSrc={image.jpg}
-                alt={`Installation by ${BUSINESS.shortName} #${1000 + i}`}
+                alt={`${altPrefix} by ${BUSINESS.shortName} — project ${i + 1}`}
                 loading="lazy"
                 decoding="async"
                 className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
@@ -223,7 +223,7 @@ export function Gallery({ caption, images, count }: { caption?: string; images: 
               avifSrc={selectedImage.avif}
               webpSrc={selectedImage.webp}
               fallbackSrc={selectedImage.jpg}
-              alt="Full view"
+              alt={`${altPrefix} — full view`}
               className="w-full h-auto rounded-lg"
               loading="eager"
               decoding="async"

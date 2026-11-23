@@ -66,6 +66,15 @@ export function Footer() {
         </div>
       </div>
       <div className="border-t border-white/10">
+        <nav aria-label="Invisible grills by city" className="container-x py-5 flex flex-wrap gap-x-4 gap-y-2 text-xs opacity-80">
+          {LOCATIONS.map((l) => (
+            <Link key={l.slug} to="/service-areas/$service/$location" params={{ service: "invisible-grills", location: l.slug }} className="hover:text-accent">
+              Invisible Grills in {l.name}
+            </Link>
+          ))}
+        </nav>
+      </div>
+      <div className="border-t border-white/10">
         <div className="container-x py-5 text-xs opacity-70 flex flex-wrap justify-between gap-3">
           <span>© {new Date().getFullYear()} {BUSINESS.name}. All rights reserved.</span>
           <span>Serving Andhra Pradesh: Vizag · Vijayawada · Rajahmundry · Guntur · Ongole · Tirupati · Anantapur</span>

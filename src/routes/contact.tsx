@@ -4,24 +4,15 @@ import { Mail, MapPin, Phone, Send } from "lucide-react";
 import { WhatsAppIcon } from "@/components/ui/whatsapp-icon";
 import { BUSINESS, LOCATIONS, SERVICES } from "@/data/business";
 import { Breadcrumbs } from "@/components/site/Sections";
-import { generateSEOMeta } from "@/lib/seo";
-import { getFullUrl } from "@/config/site";
+import { buildHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/contact")({
-  head: () => {
-    const title = `Contact Balaji Invisible Grills | Free Quote in Andhra Pradesh`;
-    const description = `Get free site visits & transparent quotes within 24 hours. Call, WhatsApp, or email. Serving Visakhapatnam, Vijayawada, Rajahmundry, Guntur, Ongole, Tirupati & Anantapur.`;
-    const keywords = ["contact", "free quote", "site visit", "customer support", "inquiry"];
-    
-    return {
-      ...generateSEOMeta({
-        title,
-        description,
-        keywords,
-        canonical: getFullUrl("/contact"),
-      }),
-    };
-  },
+  head: () =>
+    buildHead({
+      title: "Contact Balaji Invisible Grills | Free Site Visit & Quote – Vijayawada, Vizag",
+      description: `Call ${BUSINESS.phoneDisplay} or WhatsApp for a free site visit and quote for invisible grills, safety nets and cloth hangers in Vijayawada, Vizag, Guntur & across AP.`,
+      path: "/contact",
+    }),
   component: ContactPage,
 });
 
@@ -123,7 +114,7 @@ function ContactPage() {
 
         <div>
           <span className="chip">Get in touch</span>
-          <h1 className="font-display text-4xl md:text-5xl mt-3 leading-tight">Talk to a safety specialist — free.</h1>
+          <h1 className="font-display text-4xl md:text-5xl mt-3 leading-tight">Contact us for a free site visit &amp; quote</h1>
           <p className="mt-4 text-muted-foreground text-lg">Tell us about your balcony, window or sports ground. We'll schedule a free site visit and share a fixed quote within 24 hours.</p>
 
           <div className="mt-8 space-y-3">

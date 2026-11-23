@@ -2,25 +2,16 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { BLOG_POSTS, BUSINESS } from "@/data/business";
 import { Breadcrumbs, CTASection } from "@/components/site/Sections";
-import { generateSEOMeta } from "@/lib/seo";
-import { getFullUrl } from "@/config/site";
+import { buildHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/blog/")({
-  head: () => {
-    const title = `Blog & Safety Guides | ${BUSINESS.name}`;
-    const description = `Expert insights on invisible grills, safety nets, child safety, balcony protection and home security solutions for Andhra Pradesh families.`;
-    const keywords = ["blog", "guides", "safety tips", "balcony safety", "child safety", "expert advice", "home security"];
-    
-    return {
-      ...generateSEOMeta({
-        title,
-        description,
-        keywords,
-        ogImage: "/og-blog.jpg",
-        canonical: getFullUrl("/blog"),
-      }),
-    };
-  },
+  head: () =>
+    buildHead({
+      title: "Invisible Grills & Balcony Safety Guides | Balaji Invisible Grills Blog",
+      description: "Guides on invisible grills, balcony safety nets, pigeon nets, cricket nets and cloth hangers — costs, comparisons and tips for Andhra Pradesh homes.",
+      path: "/blog",
+      ogImage: "/og-blog.jpg",
+    }),
   component: BlogIndex,
 });
 
@@ -30,7 +21,7 @@ function BlogIndex() {
       <Breadcrumbs items={[{ name: "Home", href: "/" }, { name: "Blog" }]} />
       <section className="container-x py-10 md:py-16 max-w-3xl">
         <span className="chip">From the journal</span>
-        <h1 className="font-display text-4xl md:text-6xl mt-3 leading-tight">Guides, comparisons & safety insights.</h1>
+        <h1 className="font-display text-4xl md:text-6xl mt-3 leading-tight">Invisible grills &amp; balcony safety guides</h1>
         <p className="mt-5 text-lg text-muted-foreground">Practical, climate-aware advice on choosing balcony safety, invisible grills, cricket nets and more — written by our installation specialists.</p>
       </section>
 

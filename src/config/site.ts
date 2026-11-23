@@ -1,40 +1,33 @@
 /**
  * Site Configuration - Centralized settings for domain, SEO, and performance
+ *
+ * IMPORTANT: Vercel serves the site on the www host (the bare domain 308-redirects
+ * to www), and Google has chosen the www URLs as canonical. Every canonical, og:url,
+ * sitemap entry and schema URL must therefore use the www origin — pointing them at
+ * the bare domain makes Google see canonicals that redirect, which blocks indexing.
  */
 
 export const SITE_CONFIG = {
   // Domain & URLs
-  domain: "balajiinvisiblegrills.in",
-  siteUrl: "https://balajiinvisiblegrills.in",
-  
+  domain: "www.balajiinvisiblegrills.in",
+  siteUrl: "https://www.balajiinvisiblegrills.in",
+
   // Business Identity (for Google Search results)
   businessName: "Balaji Invisible Grills",
-  
-  // OG Images (using existing asset images for all pages)
+
+  // OG Images
   ogImages: {
-    default: "/og-image.jpg",      // Homepage: will use hero-invisible-grills.jpg
-    service: "/og-service.jpg",    // Service pages: will use service card images
-    locations: "/og-locations.jpg", // Location pages: will use service card images
-    blog: "/og-blog.jpg",          // Blog pages: will use service card images
+    default: "/og-image.jpg",
+    service: "/og-service.jpg",
+    locations: "/og-locations.jpg",
+    blog: "/og-blog.jpg",
   },
-  
-  // Global Keywords
-  globalKeywords: [
-    "Invisible Grills",
-    "Safety Nets",
-    "Cricket Nets",
-    "Balcony Safety",
-    "Window Safety",
-    "Stainless Steel",
-    "Andhra Pradesh",
-    "Visakhapatnam",
-    "Vijayawada",
-  ],
-  
+
   // Sitemap URL
-  sitemapUrl: "https://balajiinvisiblegrills.in/sitemap.xml",
+  sitemapUrl: "https://www.balajiinvisiblegrills.in/sitemap.xml",
 } as const;
 
 export function getFullUrl(path: string): string {
-  return `${SITE_CONFIG.siteUrl}${path}`;
+  if (/^https?:\/\//.test(path)) return path;
+  return `${SITE_CONFIG.siteUrl}${path.startsWith("/") ? path : `/${path}`}`;
 }

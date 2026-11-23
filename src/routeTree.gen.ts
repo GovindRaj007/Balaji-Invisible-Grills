@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as PageNotFoundRouteImport } from './routes/page-not-found'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
@@ -18,8 +19,14 @@ import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as ServicesServiceRouteImport } from './routes/services.$service'
 import { Route as LocationsLocationRouteImport } from './routes/locations.$location'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
+import { Route as AdsInvisibleGrillsRouteImport } from './routes/ads.invisible-grills'
 import { Route as ServiceAreasServiceLocationRouteImport } from './routes/service-areas.$service.$location'
 
+const PageNotFoundRoute = PageNotFoundRouteImport.update({
+  id: '/page-not-found',
+  path: '/page-not-found',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
@@ -65,6 +72,11 @@ const BlogSlugRoute = BlogSlugRouteImport.update({
   path: '/blog/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdsInvisibleGrillsRoute = AdsInvisibleGrillsRouteImport.update({
+  id: '/ads/invisible-grills',
+  path: '/ads/invisible-grills',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ServiceAreasServiceLocationRoute =
   ServiceAreasServiceLocationRouteImport.update({
     id: '/service-areas/$service/$location',
@@ -76,6 +88,8 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
+  '/page-not-found': typeof PageNotFoundRoute
+  '/ads/invisible-grills': typeof AdsInvisibleGrillsRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/locations/$location': typeof LocationsLocationRoute
   '/services/$service': typeof ServicesServiceRoute
@@ -88,6 +102,8 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
+  '/page-not-found': typeof PageNotFoundRoute
+  '/ads/invisible-grills': typeof AdsInvisibleGrillsRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/locations/$location': typeof LocationsLocationRoute
   '/services/$service': typeof ServicesServiceRoute
@@ -101,6 +117,8 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
+  '/page-not-found': typeof PageNotFoundRoute
+  '/ads/invisible-grills': typeof AdsInvisibleGrillsRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/locations/$location': typeof LocationsLocationRoute
   '/services/$service': typeof ServicesServiceRoute
@@ -115,6 +133,8 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/contact'
+    | '/page-not-found'
+    | '/ads/invisible-grills'
     | '/blog/$slug'
     | '/locations/$location'
     | '/services/$service'
@@ -127,6 +147,8 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/contact'
+    | '/page-not-found'
+    | '/ads/invisible-grills'
     | '/blog/$slug'
     | '/locations/$location'
     | '/services/$service'
@@ -139,6 +161,8 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/contact'
+    | '/page-not-found'
+    | '/ads/invisible-grills'
     | '/blog/$slug'
     | '/locations/$location'
     | '/services/$service'
@@ -152,6 +176,8 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   ContactRoute: typeof ContactRoute
+  PageNotFoundRoute: typeof PageNotFoundRoute
+  AdsInvisibleGrillsRoute: typeof AdsInvisibleGrillsRoute
   BlogSlugRoute: typeof BlogSlugRoute
   LocationsLocationRoute: typeof LocationsLocationRoute
   ServicesServiceRoute: typeof ServicesServiceRoute
@@ -163,6 +189,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/page-not-found': {
+      id: '/page-not-found'
+      path: '/page-not-found'
+      fullPath: '/page-not-found'
+      preLoaderRoute: typeof PageNotFoundRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/contact': {
       id: '/contact'
       path: '/contact'
@@ -226,6 +259,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ads/invisible-grills': {
+      id: '/ads/invisible-grills'
+      path: '/ads/invisible-grills'
+      fullPath: '/ads/invisible-grills'
+      preLoaderRoute: typeof AdsInvisibleGrillsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/service-areas/$service/$location': {
       id: '/service-areas/$service/$location'
       path: '/service-areas/$service/$location'
@@ -240,6 +280,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   ContactRoute: ContactRoute,
+  PageNotFoundRoute: PageNotFoundRoute,
+  AdsInvisibleGrillsRoute: AdsInvisibleGrillsRoute,
   BlogSlugRoute: BlogSlugRoute,
   LocationsLocationRoute: LocationsLocationRoute,
   ServicesServiceRoute: ServicesServiceRoute,

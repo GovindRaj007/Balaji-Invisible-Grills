@@ -78,7 +78,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "robots", content: "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" },
       { httpEquiv: "x-ua-compatible", content: "IE=edge" },
       { title: `${BUSINESS.name} | Invisible Grills & Safety Nets in Andhra Pradesh` },
-      { name: "description", content: "Premium invisible grills, child & pet safety nets, cricket nets and ceiling cloth hangers installed across Visakhapatnam, Vijayawada, Rajahmundry, Guntur, Ongole, Tirupati & Anantapur. 10-year warranty." },
+      { name: "description", content: "Invisible grills, balcony safety nets, pigeon nets, cricket practice nets and ceiling cloth hangers installed across Vijayawada, Vizag, Guntur, Rajahmundry, Tirupati, Ongole & Anantapur." },
       { name: "author", content: BUSINESS.name },
       { name: "theme-color", content: "#1a2540" },
       { property: "og:type", content: "website" },

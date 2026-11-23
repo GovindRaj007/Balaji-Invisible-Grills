@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite dev",
-    "build": "vite build && node scripts/check-build-budgets.js",
+    "build": "vite build && node scripts/generate-sitemap.mjs && node scripts/check-build-budgets.js",
     "optimize:images": "node scripts/optimize-images.mjs",
     "check:budget": "node scripts/check-build-budgets.js",
     "build:dev": "vite build --mode development",

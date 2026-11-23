@@ -2,38 +2,16 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, MapPin } from "lucide-react";
 import { BUSINESS, LOCATIONS } from "@/data/business";
 import { Breadcrumbs, CTASection } from "@/components/site/Sections";
-import { generateSEOMeta } from "@/lib/seo";
-import { getFullUrl } from "@/config/site";
+import { buildHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/locations/")({
-  head: () => {
-    const locationNames = LOCATIONS.map(l => l.name).join(", ");
-    const title = `Service Locations | ${BUSINESS.name} — Andhra Pradesh`;
-    const description = `Premium invisible grills, safety nets, cricket nets & cloth hangers installation across ${locationNames}. Local teams, free site visits, 10-year warranty.`;
-    const keywords = [
-      "service locations",
-      "invisible grills in Visakhapatnam",
-      "invisible grills in Vijayawada",
-      "invisible grills in Rajahmundry",
-      "invisible grills in Guntur",
-      "invisible grills in Ongole",
-      "invisible grills in Tirupati",
-      "invisible grills in Anantapur",
-      "safety nets in Andhra Pradesh",
-      "cricket nets in Andhra Pradesh",
-      "ceiling cloth hangers in Andhra Pradesh",
-    ];
-    
-    return {
-      ...generateSEOMeta({
-        title,
-        description,
-        keywords,
-        ogImage: "/og-locations.jpg",
-        canonical: getFullUrl("/locations"),
-      }),
-    };
-  },
+  head: () =>
+    buildHead({
+      title: "Service Areas – Vijayawada, Vizag, Guntur & More | Balaji Invisible Grills",
+      description: `Invisible grills, balcony safety nets, cricket nets and ceiling cloth hangers in Vijayawada, Vizag, Guntur, Rajahmundry, Tirupati, Ongole & Anantapur.`,
+      path: "/locations",
+      ogImage: "/og-locations.jpg",
+    }),
   component: LocationsIndex,
 });
 
@@ -43,7 +21,7 @@ function LocationsIndex() {
       <Breadcrumbs items={[{ name: "Home", href: "/" }, { name: "Locations" }]} />
       <section className="container-x py-10 md:py-16 max-w-3xl">
         <span className="chip">Service Locations</span>
-        <h1 className="font-display text-4xl md:text-6xl mt-3 leading-tight">Andhra Pradesh, covered end to end.</h1>
+        <h1 className="font-display text-4xl md:text-6xl mt-3 leading-tight">Our service areas across Andhra Pradesh</h1>
         <p className="mt-5 text-lg text-muted-foreground">From coastal Vizag to Anantapur's industrial corridor — our certified teams install premium safety solutions across seven cities, with surrounding towns served on request.</p>
       </section>
 

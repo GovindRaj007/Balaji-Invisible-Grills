@@ -1,127 +1,43 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { lazy, Suspense, useEffect, useRef, useState, type ReactNode } from "react";
-import { ArrowRight, CheckCircle2, Phone, ShieldCheck, Sparkles, Star, Wrench } from "lucide-react";
+import { ArrowRight, CheckCircle2, MapPin, Phone, ShieldCheck, Sparkles, Star, Wrench } from "lucide-react";
 import { WhatsAppIcon } from "@/components/ui/whatsapp-icon";
 import { BUSINESS, LOCATIONS, SERVICES, BLOG_POSTS } from "@/data/business";
 import { HERO_IMAGE_SOURCES, SERVICE_IMAGE_SOURCES } from "@/data/images";
-import { TrustIndicators } from "@/components/site/Sections";
-import { SITE_CONFIG, getFullUrl } from "@/config/site";
-import { organizationSchema, websiteSchema } from "@/components/site/JsonLd";
+import { CTASection, FAQ, Testimonials, TrustIndicators } from "@/components/site/Sections";
+import { SITE_CONFIG } from "@/config/site";
+import { faqSchema } from "@/components/site/JsonLd";
 import { OptimizedImage } from "@/components/ui/optimized-image";
-
-const LazyServiceAreasGrid = lazy(() => import("@/components/site/Sections").then((module) => ({ default: module.ServiceAreasGrid })));
-const LazyTestimonials = lazy(() => import("@/components/site/Sections").then((module) => ({ default: module.Testimonials })));
-const LazyFAQ = lazy(() => import("@/components/site/Sections").then((module) => ({ default: module.FAQ })));
-const LazyCTASection = lazy(() => import("@/components/site/Sections").then((module) => ({ default: module.CTASection })));
-
-function DeferredSection({ children, fallback = null }: { children: ReactNode; fallback?: ReactNode }) {
-  const [isVisible, setIsVisible] = useState(false);
-  const ref = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    const node = ref.current;
-    if (!node) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.disconnect();
-        }
-      },
-      { rootMargin: "250px 0px" }
-    );
-
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, []);
-
-  return <div ref={ref}>{isVisible ? children : fallback}</div>;
-}
+import { buildHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/")({
-  head: () => {
-    const title = "Andhra Pradesh's Best Invisible Grills, Safety Nets & Cricket Nets | Balaji Invisible Grills";
-    const description = "Balaji Invisible Grills installs premium invisible grills, balcony safety nets, cricket nets and ceiling cloth hangers across Vizag, Vijayawada, Rajahmundry, Guntur, Ongole, Tirupati and Anantapur. Free site visit, transparent quote and 10-year warranty.";
-    const keywords = [
-      "invisible grills",
-      "invisible grill installation",
-      "invisible grill installation near me",
-      "invisible grill for balcony in vijayawada",
-      "balcony invisible grills in guntur",
-      "invisible grills for balcony in visakhapatnam",
-      "invisible grills in vizag",
-      "invisible grills tirupati",
-      "invisible grills ongole",
-      "ss316 invisible grills",
-      "invisible grill near me",
-      "invisible grill fitting near me",
-      "ceiling cloth hanger",
-      "ceiling mounted cloth drying hanger",
-      "cloth drying hanger installation",
-      "cricket nets",
-      "cricket practice nets",
-      "box cricket nets installation",
-      "sports net installation",
-      "box cricket turf installation",
-      "balcony safety nets",
-      "child safety nets",
-      "pigeon nets",
-      "pigeon nets for balcony",
-      "duct area nets",
-    ].join(", ");
-    
-    return {
-      meta: [
-        { title },
-        { name: "description", content: description },
-        { name: "keywords", content: keywords },
-        { name: "theme-color", content: "#1B2D4D" },
-        // Open Graph
-        { property: "og:type", content: "website" },
-        { property: "og:site_name", content: SITE_CONFIG.businessName },
-        { property: "og:title", content: title },
-        { property: "og:description", content: description },
-        { property: "og:url", content: getFullUrl("/") },
-        { property: "og:image", content: getFullUrl(SITE_CONFIG.ogImages.default) },
-        { property: "og:image:width", content: "1200" },
-        { property: "og:image:height", content: "630" },
-        // Twitter Card
-        { name: "twitter:card", content: "summary_large_image" },
-        { name: "twitter:title", content: title },
-        { name: "twitter:description", content: description },
-        { name: "twitter:image", content: getFullUrl(SITE_CONFIG.ogImages.default) },
-        // Additional SEO
-        { name: "viewport", content: "width=device-width, initial-scale=1" },
-        { name: "author", content: SITE_CONFIG.businessName },
-        { name: "robots", content: "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" },
+  head: () =>
+    buildHead({
+      // Home targets the broad, location-free service terms + brand. City-specific
+      // searches ("invisible grills in vijayawada") are owned by the service × city pages.
+      title: "Invisible Grills, Safety Nets & Cloth Hangers in Andhra Pradesh | Balaji",
+      description:
+        "Invisible grills for balcony & windows from ₹100/sq ft, pigeon & children safety nets, cricket nets and cloth hangers in Vijayawada, Vizag & across AP.",
+      path: "/",
+      ogImage: SITE_CONFIG.ogImages.default,
+      keywords: [
+        "invisible grills", "invisible grills near me", "invisible grills for balcony", "invisible grills for windows",
+        "balcony safety nets", "pigeon nets", "children safety nets", "cricket practice nets", "ceiling cloth hanger",
       ],
       links: [
-        { rel: "canonical", href: getFullUrl("/") },
         { rel: "preload", as: "image", href: HERO_IMAGE_SOURCES.avif, type: "image/avif", fetchPriority: "high" },
-        { rel: "preload", as: "image", href: HERO_IMAGE_SOURCES.webp, type: "image/webp", fetchPriority: "high" },
       ],
-      scripts: [
-        {
-          type: "application/ld+json",
-          children: JSON.stringify(organizationSchema()),
-        },
-        {
-          type: "application/ld+json",
-          children: JSON.stringify(websiteSchema()),
-        },
-      ],
-    };
-  },
+      schemas: [faqSchema(homeFaqs)],
+    }),
   component: HomePage,
 });
 
 const homeFaqs = [
-  { q: "Which cities in Andhra Pradesh do you serve?", a: "We install across Visakhapatnam, Vijayawada, Rajahmundry, Guntur, Ongole, Tirupati and Anantapur — with surrounding towns covered on request." },
-  { q: "Do you offer free site visits and quotations?", a: "Yes. Our specialist visits, measures your balcony or window, and shares a transparent fixed quote within 24 hours — at no charge or obligation." },
+  { q: "Do you install invisible grills near me?", a: "We install invisible grills, balcony safety nets, pigeon nets and ceiling cloth hangers across Vijayawada, Vizag (Visakhapatnam), Guntur, Rajahmundry, Tirupati, Ongole and Anantapur — with surrounding towns covered on request. Our main branch is in Vijayawada." },
+  { q: "What is the price of invisible grills per sq ft?", a: "Invisible grills start from ₹100 per sq ft. The final price depends on SS 304 vs SS 316 cable, cable thickness, spacing and floor height. We share a fixed, itemised quote after a free site visit — usually within 24 hours." },
+  { q: "Invisible grills or safety nets — which is better for my balcony?", a: "Invisible grills are a permanent, premium stainless steel solution with a 10-year warranty. Balcony safety nets cost less, install in 60–90 minutes and are ideal for pigeon control or rented homes. Many families use grills on the main balcony and pigeon nets on the utility balcony." },
   { q: "What warranty do you provide?", a: "10-year structural warranty on invisible grill tracks and cables, 5-year UV warranty on safety nets, and 3-year warranty on cricket nets." },
-  { q: "How long does installation take?", a: "A typical 3BHK balcony is completed in 4–6 hours for invisible grills, and 60–90 minutes for safety nets." },
-  { q: "Do you serve coastal cities like Visakhapatnam?", a: "Yes — and we use 316L marine-grade stainless steel specifically engineered for the salt-air corrosion you get in Vizag." },
+  { q: "How long does installation take?", a: "A typical balcony invisible grill takes 4–6 hours, balcony safety nets 60–90 minutes, and a ceiling cloth hanger under an hour." },
+  { q: "Will invisible grills rust in coastal cities like Vizag?", a: "No — we use SS 316 marine-grade stainless steel, engineered specifically for the salt-air corrosion you get in Vizag and other coastal towns." },
 ];
 
 function HomePage() {
@@ -175,13 +91,13 @@ function HomePage() {
               {/* Card Content */}
               <div className="bg-background/95 backdrop-blur p-5 sm:p-6 md:p-8">
                 <h1 className="font-display text-2xl sm:text-3xl md:text-4xl leading-tight">
-                  Uninterrupted views.<br />
-                  <span className="text-accent">Uncompromising safety.</span>
+                  Invisible Grills &amp; Balcony Safety Nets <span className="text-accent">in Andhra Pradesh</span>
                 </h1>
+                <p className="mt-3 text-base md:text-lg font-medium text-foreground/80">Uninterrupted views. Uncompromising safety.</p>
 
                 {/* Subheadline */}
                 <div className="mt-4 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-sm md:text-base text-muted-foreground font-medium">
-                  <span>Best price in {LOCATIONS.map(l => l.name).join(", ")}</span>
+                  <span>Vijayawada · Vizag · Guntur · Rajahmundry · Tirupati · Ongole · Anantapur</span>
                   <span className="hidden sm:inline text-border">|</span>
                   <span>6500+ satisfied homes</span>
                 </div>
@@ -217,14 +133,14 @@ function HomePage() {
             <div>
               <span className="chip"><Sparkles className="size-3.5" /> Premium safety since 2013</span>
               
-              <h1 className="font-display text-5xl lg:text-6xl mt-6 leading-[1.1]">
-                Uninterrupted views.<br />
-                <span className="text-accent">Uncompromising safety.</span>
-              </h1>
+              <p className="font-display text-5xl lg:text-6xl mt-6 leading-[1.1]">
+                Invisible Grills &amp; Balcony Safety Nets <span className="text-accent">in Andhra Pradesh</span>
+              </p>
+              <p className="mt-4 text-xl font-medium text-foreground/80">Uninterrupted views. Uncompromising safety.</p>
 
               {/* Subheadline */}
               <div className="mt-6 flex items-center gap-4 text-base text-muted-foreground font-medium">
-                <span>Best price in {LOCATIONS.map(l => l.name).join(", ")}</span>
+                <span>Vijayawada · Vizag · Guntur · Rajahmundry · Tirupati · Ongole · Anantapur</span>
                 <span className="text-border">|</span>
                 <span>6500+ satisfied homes</span>
               </div>
@@ -291,7 +207,7 @@ function HomePage() {
           <div className="flex items-end justify-between flex-wrap gap-4 mb-10">
             <div>
               <span className="eyebrow">Our Services</span>
-              <h2 className="font-display text-3xl md:text-5xl mt-2">Four services. One promise: safety done right.</h2>
+              <h2 className="font-display text-3xl md:text-5xl mt-2">Invisible grills, safety nets, cricket nets &amp; cloth hangers</h2>
             </div>
             <Link to="/services" className="btn-outline">View all services <ArrowRight className="size-4" /></Link>
           </div>
@@ -303,7 +219,7 @@ function HomePage() {
                     avifSrc={SERVICE_IMAGE_SOURCES[s.slug].avif}
                     webpSrc={SERVICE_IMAGE_SOURCES[s.slug].webp}
                     fallbackSrc={SERVICE_IMAGE_SOURCES[s.slug].jpg}
-                    alt={s.name}
+                    alt={`${s.keyword} installation by ${BUSINESS.shortName}`}
                     loading="lazy"
                     decoding="async"
                     className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
@@ -312,13 +228,29 @@ function HomePage() {
                   <div className="absolute top-4 left-4 chip !bg-white/15 !text-white !border-white/25 backdrop-blur">{s.name}</div>
                 </div>
                 <div className="p-6">
-                  <h3 className="font-display text-2xl">{s.hero}</h3>
+                  <h3 className="font-display text-2xl">{s.keyword}</h3>
+                  <p className="text-sm font-medium text-accent mt-1">{s.hero}</p>
                   <p className="text-muted-foreground mt-2">{s.short}</p>
                   <span className="mt-5 inline-flex items-center gap-1.5 text-accent font-semibold text-sm group-hover:gap-3 transition-all">Explore {s.name} <ArrowRight className="size-4" /></span>
                 </div>
               </Link>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* KEYWORD INTRO — plain, crawlable copy covering every core service term */}
+      <section className="pt-[64px]">
+        <div className="container-x max-w-4xl">
+          <h2 className="font-display text-3xl md:text-4xl">Balcony safety specialists across Andhra Pradesh</h2>
+          <p className="mt-4 text-muted-foreground leading-relaxed">
+            {BUSINESS.name} installs <Link to="/services/$service" params={{ service: "invisible-grills" }} className="text-accent font-semibold hover:underline">invisible grills for balconies and windows</Link>,{" "}
+            <Link to="/services/$service" params={{ service: "child-pet-safety-nets" }} className="text-accent font-semibold hover:underline">balcony safety nets, pigeon nets and children safety nets</Link>,{" "}
+            <Link to="/services/$service" params={{ service: "cricket-sports-nets" }} className="text-accent font-semibold hover:underline">cricket practice nets and sports nets</Link> and{" "}
+            <Link to="/services/$service" params={{ service: "ceiling-cloth-hangers" }} className="text-accent font-semibold hover:underline">ceiling cloth hangers</Link> for apartments, villas, schools and academies.
+            With our main branch in Vijayawada and teams covering Vizag (Visakhapatnam), Guntur, Rajahmundry, Tirupati, Ongole and Anantapur,
+            we offer a free site visit, a fixed transparent quote and a written warranty on every installation.
+          </p>
         </div>
       </section>
 
@@ -368,17 +300,33 @@ function HomePage() {
         </div>
       </section>
 
-      <DeferredSection>
-        <Suspense fallback={null}>
-          <LazyServiceAreasGrid />
-        </Suspense>
-      </DeferredSection>
+      {/* SERVICES BY CITY — direct internal links to every service × city page */}
+      <section className="pt-[64px]">
+        <div className="container-x">
+          <span className="eyebrow">Services near you</span>
+          <h2 className="font-display text-3xl md:text-4xl mt-2 mb-8">Find our services in your city</h2>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {LOCATIONS.map((l) => (
+              <div key={l.slug} className="card-surface">
+                <Link to="/locations/$location" params={{ location: l.slug }} className="font-display text-xl flex items-center gap-2 hover:text-accent">
+                  <MapPin className="size-4 text-accent" /> {l.name}
+                </Link>
+                <ul className="mt-3 space-y-1.5 text-sm">
+                  {SERVICES.map((s) => (
+                    <li key={s.slug}>
+                      <Link to="/service-areas/$service/$location" params={{ service: s.slug, location: l.slug }} className="text-muted-foreground hover:text-accent">
+                        {s.keyword} in {l.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
-      <DeferredSection>
-        <Suspense fallback={null}>
-          <LazyTestimonials />
-        </Suspense>
-      </DeferredSection>
+      <Testimonials />
 
       {/* BLOG */}
       <section className="pt-[64px]">
@@ -402,16 +350,8 @@ function HomePage() {
         </div>
       </section>
 
-      <DeferredSection>
-        <Suspense fallback={null}>
-          <LazyFAQ faqs={homeFaqs} />
-        </Suspense>
-      </DeferredSection>
-      <DeferredSection>
-        <Suspense fallback={null}>
-          <LazyCTASection />
-        </Suspense>
-      </DeferredSection>
+      <FAQ faqs={homeFaqs} />
+      <CTASection />
     </>
   );
 }

@@ -1,18 +1,7 @@
 # robots.txt for Balaji Invisible Grills
 User-agent: *
 Allow: /
-Allow: /assets/
-Allow: /sitemap.xml
-Disallow: 
+Disallow: /ads/
+Disallow: /page-not-found
 
-# Specific rules
-User-agent: Googlebot
-Allow: /
-Crawl-delay: 0
-
-User-agent: Bingbot
-Allow: /
-Crawl-delay: 1
-
-# Sitemaps
-Sitemap: https://balajiinvisiblegrills.in/sitemap.xml
+Sitemap: https://www.balajiinvisiblegrills.in/sitemap.xml

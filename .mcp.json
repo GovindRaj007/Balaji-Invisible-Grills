@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "gsc": {
+      "command": "C:\Users\Govind Raj\.local\bin\uvx.exe",
+      "args": ["--offline", "mcp-search-console"],
+      "env": {
+        "GSC_OAUTH_CLIENT_SECRETS_FILE": "C:\Users\Govind Raj\.gsc-balaji\client-secrets.json",
+        "GSC_CONFIG_DIR": "C:\Users\Govind Raj\.gsc-balaji"
+      }
+    }
+  }
+}

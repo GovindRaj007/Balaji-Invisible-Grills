@@ -15,6 +15,8 @@ export default defineConfig({
         crawlLinks: true,
         failOnError: true,
       },
+      // Not linked from anywhere, so list it explicitly; the post-build script turns it into 404.html.
+      pages: [{ path: "/page-not-found" }],
     }),
     tailwind(),
     react(),

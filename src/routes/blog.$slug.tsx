@@ -1,8 +1,9 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
-import { BLOG_POSTS, BUSINESS } from "@/data/business";
-import { Breadcrumbs, CTASection } from "@/components/site/Sections";
-import { breadcrumbSchema } from "@/components/site/JsonLd";
+import { BLOG_POSTS, SERVICES, type ServiceSlug } from "@/data/business";
+import { buildHead } from "@/lib/seo";
+import { Breadcrumbs, CTASection, FAQ } from "@/components/site/Sections";
+import { breadcrumbSchema, faqSchema } from "@/components/site/JsonLd";
 import { getFullUrl, SITE_CONFIG } from "@/config/site";
 
 export const Route = createFileRoute("/blog/$slug")({
@@ -11,63 +12,53 @@ export const Route = createFileRoute("/blog/$slug")({
     if (!post) throw notFound();
     return { post };
   },
-  head: ({ loaderData, params }) => {
+  head: ({ loaderData }) => {
     if (!loaderData) return {};
     const p = loaderData.post;
-    const title = `${p.title} | ${SITE_CONFIG.businessName} Blog`;
-    const keywords = [p.title, "guide", "safety", "blog", "tips"];
-    
-    return {
-      meta: [
-        { title },
-        { name: "description", content: p.excerpt },
-        { name: "keywords", content: keywords.join(", ") },
-        { name: "theme-color", content: "#1B2D4D" },
-        { property: "og:type", content: "article" },
-        { property: "og:site_name", content: SITE_CONFIG.businessName },
-        { property: "og:title", content: title },
-        { property: "og:description", content: p.excerpt },
-        { property: "og:url", content: getFullUrl(`/blog/${params.slug}`) },
-        { property: "og:image", content: SITE_CONFIG.ogImages.blog },
-        { property: "og:image:width", content: "1200" },
-        { property: "og:image:height", content: "630" },
-        { property: "article:published_time", content: p.date },
-        { property: "article:author", content: SITE_CONFIG.businessName },
-        { name: "twitter:card", content: "summary_large_image" },
-        { name: "twitter:title", content: title },
-        { name: "twitter:description", content: p.excerpt },
-        { name: "twitter:image", content: SITE_CONFIG.ogImages.blog },
-        { name: "viewport", content: "width=device-width, initial-scale=1" },
-        { name: "author", content: SITE_CONFIG.businessName },
-        { name: "robots", content: "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" },
-      ],
-      links: [
-        { rel: "canonical", href: getFullUrl(`/blog/${params.slug}`) },
-      ],
-      scripts: [
-        { type: "application/ld+json", children: JSON.stringify({
+    const path = `/blog/${p.slug}`;
+    return buildHead({
+      title: `${p.title} | ${SITE_CONFIG.businessName}`,
+      description: p.excerpt,
+      path,
+      ogType: "article",
+      ogImage: SITE_CONFIG.ogImages.blog,
+      extraMeta: [{ property: "article:published_time", content: p.date }],
+      schemas: [
+        {
           "@context": "https://schema.org",
-          "@type": "Article",
+          "@type": "BlogPosting",
           headline: p.title,
           description: p.excerpt,
           datePublished: p.date,
-          author: { "@type": "Organization", name: SITE_CONFIG.businessName },
-          publisher: { "@type": "Organization", name: SITE_CONFIG.businessName },
-          image: SITE_CONFIG.ogImages.blog,
-        })},
-        { type: "application/ld+json", children: JSON.stringify(breadcrumbSchema([
-          { name: "Home", url: getFullUrl("/") },
-          { name: "Blog", url: getFullUrl("/blog") },
-          { name: p.title, url: getFullUrl(`/blog/${p.slug}`) },
-        ])) },
+          dateModified: p.updated ?? p.date,
+          mainEntityOfPage: getFullUrl(path),
+          author: { "@type": "Organization", name: SITE_CONFIG.businessName, url: getFullUrl("/") },
+          publisher: { "@id": getFullUrl("/#organization") },
+          image: getFullUrl(SITE_CONFIG.ogImages.blog),
+        },
+        breadcrumbSchema([
+          { name: "Home", url: "/" },
+          { name: "Blog", url: "/blog" },
+          { name: p.title, url: path },
+        ]),
+        ...(p.faqs?.length ? [faqSchema(p.faqs)] : []),
       ],
-    };
+    });
   },
   component: BlogPost,
 });
 
+/** Pick the service a post is about, so every article links to the page that should rank. */
+function relatedServiceSlug(slug: string): ServiceSlug {
+  if (slug.includes("cricket")) return "cricket-sports-nets";
+  if (slug.includes("cloth")) return "ceiling-cloth-hangers";
+  if (slug.includes("net")) return "child-pet-safety-nets";
+  return "invisible-grills";
+}
+
 function BlogPost() {
   const { post } = Route.useLoaderData();
+  const service = SERVICES.find((x) => x.slug === relatedServiceSlug(post.slug))!;
   const related = BLOG_POSTS.filter((p) => p.slug !== post.slug).slice(0, 3);
 
   return (
@@ -84,15 +75,28 @@ function BlogPost() {
         <p className="mt-5 text-lg text-muted-foreground italic">{post.excerpt}</p>
 
         <div className="mt-10 space-y-10">
-          {post.body.map((section: { heading: string; paragraphs: string[] }, i: number) => (
+          {post.body.map((section, i) => (
             <section key={i}>
               <h2 className="font-display text-2xl md:text-3xl mb-4">{section.heading}</h2>
               <div className="space-y-4 text-foreground leading-relaxed">
-                {section.paragraphs.map((p: string, j: number) => <p key={j}>{p}</p>)}
+                {section.paragraphs.map((p, j) => <p key={j}>{p}</p>)}
+                {section.list && (
+                  <ul className="list-disc pl-6 space-y-2">
+                    {section.list.map((li, j) => <li key={j}>{li}</li>)}
+                  </ul>
+                )}
               </div>
             </section>
           ))}
         </div>
+        <aside className="mt-12 card-surface">
+          <div className="text-xs font-semibold text-accent uppercase tracking-wider">Related service</div>
+          <h2 className="font-display text-2xl mt-2">{service.keyword}</h2>
+          <p className="text-muted-foreground text-sm mt-2">{service.intro}</p>
+          <Link to="/services/$service" params={{ service: service.slug }} className="mt-4 inline-flex items-center gap-1.5 text-accent font-semibold text-sm">
+            Explore {service.keyword.toLowerCase()} <ArrowRight className="size-4" />
+          </Link>
+        </aside>
       </article>
 
       <section className="section-y bg-surface">
@@ -110,6 +114,7 @@ function BlogPost() {
         </div>
       </section>
 
+      {post.faqs?.length ? <FAQ faqs={post.faqs} /> : null}
       <CTASection />
     </>
   );

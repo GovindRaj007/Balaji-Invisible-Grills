@@ -4,38 +4,16 @@ import { BUSINESS, SERVICES } from "@/data/business";
 import { SERVICE_IMAGE_SOURCES } from "@/data/images";
 import { Breadcrumbs, CTASection } from "@/components/site/Sections";
 import { OptimizedImage } from "@/components/ui/optimized-image";
-import { generateSEOMeta } from "@/lib/seo";
-import { getFullUrl } from "@/config/site";
+import { buildHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/services/")({
-  head: () => {
-    const title = `Services | Invisible Grills, Safety Nets, Cricket Nets | ${BUSINESS.name}`;
-    const description = `Professional installation of 316L invisible grills, child & pet safety nets, cricket nets, and ceiling cloth hangers across Visakhapatnam, Vijayawada, Rajahmundry, Guntur, Ongole, Tirupati & Anantapur.`;
-    const keywords = [
-      "invisible grills",
-      "invisible grill installation",
-      "safety nets",
-      "child safety nets",
-      "cricket nets",
-      "cricket practice nets",
-      "box cricket nets installation",
-      "sports net installation",
-      "balcony safety nets",
-      "ceiling cloth hanger",
-      "ceiling mounted cloth drying hanger",
-      "cloth drying hanger installation",
-    ];
-    
-    return {
-      ...generateSEOMeta({
-        title,
-        description,
-        keywords,
-        ogImage: "/og-service.jpg",
-        canonical: getFullUrl("/services"),
-      }),
-    };
-  },
+  head: () =>
+    buildHead({
+      title: "Invisible Grills, Safety Nets, Cricket Nets & Cloth Hangers | Our Services",
+      description: "Invisible grills for balcony & windows, pigeon & children safety nets, cricket practice nets and ceiling cloth hangers — installed across Vijayawada, Vizag & AP.",
+      path: "/services",
+      ogImage: "/og-service.jpg",
+    }),
   component: ServicesIndex,
 });
 
@@ -45,7 +23,7 @@ function ServicesIndex() {
       <Breadcrumbs items={[{ name: "Home", href: "/" }, { name: "Services" }]} />
       <section className="container-x py-10 md:py-14">
         <span className="chip">Services Overview</span>
-        <h1 className="font-display text-4xl md:text-6xl mt-3 leading-tight max-w-3xl">Four premium services that protect Andhra Pradesh families.</h1>
+        <h1 className="font-display text-4xl md:text-6xl mt-3 leading-tight max-w-3xl">Invisible grills, safety nets, cricket nets &amp; cloth hangers</h1>
         <p className="mt-5 text-lg text-muted-foreground max-w-2xl">From 316L invisible grills to UV-stabilised safety nets — every solution is engineered for our climate and backed by industry-leading warranty.</p>
       </section>
 
@@ -57,7 +35,7 @@ function ServicesIndex() {
                 avifSrc={SERVICE_IMAGE_SOURCES[s.slug].avif}
                 webpSrc={SERVICE_IMAGE_SOURCES[s.slug].webp}
                 fallbackSrc={SERVICE_IMAGE_SOURCES[s.slug].jpg}
-                alt={s.name}
+                alt={`${s.keyword} installation`}
                 loading="lazy"
                 className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
               />

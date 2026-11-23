@@ -1,61 +1,63 @@
 /**
- * SEO Utilities - Helper functions for generating meta tags and schemas
+ * SEO Utilities — one helper builds the full <head> for every route so titles,
+ * descriptions, canonicals, Open Graph and robots stay consistent site-wide.
  */
 
 import { SITE_CONFIG, getFullUrl } from "@/config/site";
-import { organizationSchema } from "@/components/site/JsonLd";
 
 export interface SEOConfig {
+  /** Page title. Keep the primary keyword first; aim for ≤ 65 characters. */
   title: string;
+  /** Meta description. Aim for 140–160 characters with the primary keyword + a CTA. */
   description: string;
+  /** Path of the page, e.g. "/services/invisible-grills". Used for canonical + og:url. */
+  path: string;
   keywords?: string[];
   ogImage?: string;
-  ogType?: "website" | "article" | "business.business";
-  canonical?: string;
-  hrefLang?: string;
+  ogType?: "website" | "article";
+  /** JSON-LD objects to emit for this page. */
+  schemas?: object[];
+  /** Extra <link> tags (preloads etc). */
+  links?: Record<string, string>[];
+  /** Extra meta tags (article:published_time etc). */
+  extraMeta?: Record<string, string>[];
+  /** Hide the page from search (thank-you pages, ad landing pages, 404). */
+  noindex?: boolean;
 }
 
-export function generateSEOMeta(config: SEOConfig) {
-  const keywords = (config.keywords && config.keywords.length ? config.keywords : SITE_CONFIG.globalKeywords).join(", ");
-  // Prefer an absolute URL for Open Graph images so previews resolve reliably
-  const rawOg = config.ogImage || SITE_CONFIG.ogImages.default;
-  const ogImage = rawOg.startsWith("/") ? getFullUrl(rawOg) : rawOg;
-  const canonical = config.canonical || SITE_CONFIG.siteUrl;
-  
+const ROBOTS_INDEX = "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1";
+
+export function buildHead(config: SEOConfig) {
+  const canonical = getFullUrl(config.path);
+  const ogImage = getFullUrl(config.ogImage || SITE_CONFIG.ogImages.default);
+
+  const meta: Record<string, string>[] = [
+    { title: config.title },
+    { name: "description", content: config.description },
+    { name: "robots", content: config.noindex ? "noindex, follow" : ROBOTS_INDEX },
+    { property: "og:type", content: config.ogType || "website" },
+    { property: "og:site_name", content: SITE_CONFIG.businessName },
+    { property: "og:locale", content: "en_IN" },
+    { property: "og:title", content: config.title },
+    { property: "og:description", content: config.description },
+    { property: "og:url", content: canonical },
+    { property: "og:image", content: ogImage },
+    { property: "og:image:width", content: "1200" },
+    { property: "og:image:height", content: "630" },
+    { name: "twitter:card", content: "summary_large_image" },
+    { name: "twitter:title", content: config.title },
+    { name: "twitter:description", content: config.description },
+    { name: "twitter:image", content: ogImage },
+    ...(config.extraMeta ?? []),
+  ];
+  if (config.keywords?.length) meta.push({ name: "keywords", content: config.keywords.join(", ") });
+
   return {
-    meta: [
-      { title: config.title },
-      { name: "description", content: config.description },
-      { name: "keywords", content: keywords },
-      { name: "theme-color", content: "#1B2D4D" },
-      // Open Graph
-      { property: "og:type", content: config.ogType || "website" },
-      { property: "og:site_name", content: SITE_CONFIG.businessName },
-      { property: "og:title", content: config.title },
-      { property: "og:description", content: config.description },
-      { property: "og:url", content: canonical },
-      { property: "og:image", content: ogImage },
-      { property: "og:image:width", content: "1200" },
-      { property: "og:image:height", content: "630" },
-      // Twitter Card
-      { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: config.title },
-      { name: "twitter:description", content: config.description },
-      { name: "twitter:image", content: ogImage },
-      // Additional SEO
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { name: "author", content: SITE_CONFIG.businessName },
-      { name: "robots", content: "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" },
-    ],
-    links: [
-      { rel: "canonical", href: canonical },
-      config.hrefLang ? { rel: "alternate", hrefLang: config.hrefLang, href: canonical } : undefined,
-    ].filter(Boolean),
-    scripts: [
-      {
-        type: "application/ld+json",
-        children: JSON.stringify(organizationSchema()),
-      },
-    ],
+    meta,
+    links: [{ rel: "canonical", href: canonical }, ...(config.links ?? [])],
+    scripts: (config.schemas ?? []).map((s) => ({
+      type: "application/ld+json",
+      children: JSON.stringify(s),
+    })),
   };
 }

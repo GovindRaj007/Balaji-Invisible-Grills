@@ -2,24 +2,15 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Award, CheckCircle2, Heart, ShieldCheck, Target, Users } from "lucide-react";
 import { BUSINESS } from "@/data/business";
 import { CTASection } from "@/components/site/Sections";
-import { generateSEOMeta } from "@/lib/seo";
-import { getFullUrl } from "@/config/site";
+import { buildHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/about")({
-  head: () => {
-    const title = `About ${BUSINESS.name} | 12+ Years of Balcony Safety Excellence`;
-    const description = `Learn about ${BUSINESS.name}'s journey since 2013. 6,500+ installations, 10-year warranties, and a commitment to family safety across Andhra Pradesh.`;
-    const keywords = ["about us", "company history", "experience", "team", "quality standards", "safety commitment"];
-    
-    return {
-      ...generateSEOMeta({
-        title,
-        description,
-        keywords,
-        canonical: getFullUrl("/about"),
-      }),
-    };
-  },
+  head: () =>
+    buildHead({
+      title: "About Balaji Invisible Grills | Invisible Grill Experts in Vijayawada Since 2013",
+      description: "Balaji Invisible Grills has installed 6,500+ invisible grills, balcony safety nets and cloth hangers since 2013. Main branch in Vijayawada, serving Vizag & all of AP.",
+      path: "/about",
+    }),
   component: AboutPage,
 });
 
@@ -29,7 +20,7 @@ function AboutPage() {
       <section className="hero-bg py-16 md:py-24">
         <div className="container-x max-w-4xl text-center">
           <span className="chip">About Us</span>
-          <h1 className="font-display text-4xl md:text-6xl mt-4 leading-tight">Built on a simple promise: every family deserves a safe balcony.</h1>
+          <h1 className="font-display text-4xl md:text-6xl mt-4 leading-tight">About Balaji Invisible Grills — balcony safety experts since 2013</h1>
           <p className="mt-6 text-lg text-muted-foreground">Since 2013, we've installed over 6,500 invisible grills and safety nets across Andhra Pradesh — and never had a single structural failure.</p>
         </div>
       </section>
