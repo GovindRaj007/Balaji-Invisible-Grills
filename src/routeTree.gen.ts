@@ -9,27 +9,22 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as PageNotFoundRouteImport } from './routes/page-not-found'
-import { Route as ContactRouteImport } from './routes/contact'
-import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ServicesIndexRouteImport } from './routes/services.index'
-import { Route as LocationsIndexRouteImport } from './routes/locations.index'
-import { Route as BlogIndexRouteImport } from './routes/blog.index'
-import { Route as ServicesServiceRouteImport } from './routes/services.$service'
-import { Route as LocationsLocationRouteImport } from './routes/locations.$location'
-import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as PageNotFoundRouteImport } from './routes/page-not-found'
 import { Route as AdsInvisibleGrillsRouteImport } from './routes/ads.invisible-grills'
+import { Route as BlogIndexRouteImport } from './routes/blog.index'
+import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
+import { Route as LocationsIndexRouteImport } from './routes/locations.index'
+import { Route as LocationsLocationRouteImport } from './routes/locations.$location'
+import { Route as ServicesIndexRouteImport } from './routes/services.index'
+import { Route as ServicesServiceRouteImport } from './routes/services.$service'
 import { Route as ServiceAreasServiceLocationRouteImport } from './routes/service-areas.$service.$location'
 
-const PageNotFoundRoute = PageNotFoundRouteImport.update({
-  id: '/page-not-found',
-  path: '/page-not-found',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ContactRoute = ContactRouteImport.update({
-  id: '/contact',
-  path: '/contact',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -37,19 +32,19 @@ const AboutRoute = AboutRouteImport.update({
   path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ServicesIndexRoute = ServicesIndexRouteImport.update({
-  id: '/services/',
-  path: '/services/',
+const PageNotFoundRoute = PageNotFoundRouteImport.update({
+  id: '/page-not-found',
+  path: '/page-not-found',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LocationsIndexRoute = LocationsIndexRouteImport.update({
-  id: '/locations/',
-  path: '/locations/',
+const AdsInvisibleGrillsRoute = AdsInvisibleGrillsRouteImport.update({
+  id: '/ads/invisible-grills',
+  path: '/ads/invisible-grills',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BlogIndexRoute = BlogIndexRouteImport.update({
@@ -57,9 +52,14 @@ const BlogIndexRoute = BlogIndexRouteImport.update({
   path: '/blog/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ServicesServiceRoute = ServicesServiceRouteImport.update({
-  id: '/services/$service',
-  path: '/services/$service',
+const BlogSlugRoute = BlogSlugRouteImport.update({
+  id: '/blog/$slug',
+  path: '/blog/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LocationsIndexRoute = LocationsIndexRouteImport.update({
+  id: '/locations/',
+  path: '/locations/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LocationsLocationRoute = LocationsLocationRouteImport.update({
@@ -67,14 +67,14 @@ const LocationsLocationRoute = LocationsLocationRouteImport.update({
   path: '/locations/$location',
   getParentRoute: () => rootRouteImport,
 } as any)
-const BlogSlugRoute = BlogSlugRouteImport.update({
-  id: '/blog/$slug',
-  path: '/blog/$slug',
+const ServicesIndexRoute = ServicesIndexRouteImport.update({
+  id: '/services/',
+  path: '/services/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdsInvisibleGrillsRoute = AdsInvisibleGrillsRouteImport.update({
-  id: '/ads/invisible-grills',
-  path: '/ads/invisible-grills',
+const ServicesServiceRoute = ServicesServiceRouteImport.update({
+  id: '/services/$service',
+  path: '/services/$service',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ServiceAreasServiceLocationRoute =
@@ -189,18 +189,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/page-not-found': {
-      id: '/page-not-found'
-      path: '/page-not-found'
-      fullPath: '/page-not-found'
-      preLoaderRoute: typeof PageNotFoundRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/contact': {
-      id: '/contact'
-      path: '/contact'
-      fullPath: '/contact'
-      preLoaderRoute: typeof ContactRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about': {
@@ -210,25 +203,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/services/': {
-      id: '/services/'
-      path: '/services'
-      fullPath: '/services/'
-      preLoaderRoute: typeof ServicesIndexRouteImport
+    '/page-not-found': {
+      id: '/page-not-found'
+      path: '/page-not-found'
+      fullPath: '/page-not-found'
+      preLoaderRoute: typeof PageNotFoundRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/locations/': {
-      id: '/locations/'
-      path: '/locations'
-      fullPath: '/locations/'
-      preLoaderRoute: typeof LocationsIndexRouteImport
+    '/ads/invisible-grills': {
+      id: '/ads/invisible-grills'
+      path: '/ads/invisible-grills'
+      fullPath: '/ads/invisible-grills'
+      preLoaderRoute: typeof AdsInvisibleGrillsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/blog/': {
@@ -238,11 +231,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/services/$service': {
-      id: '/services/$service'
-      path: '/services/$service'
-      fullPath: '/services/$service'
-      preLoaderRoute: typeof ServicesServiceRouteImport
+    '/blog/$slug': {
+      id: '/blog/$slug'
+      path: '/blog/$slug'
+      fullPath: '/blog/$slug'
+      preLoaderRoute: typeof BlogSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/locations/': {
+      id: '/locations/'
+      path: '/locations'
+      fullPath: '/locations/'
+      preLoaderRoute: typeof LocationsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/locations/$location': {
@@ -252,18 +252,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LocationsLocationRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/blog/$slug': {
-      id: '/blog/$slug'
-      path: '/blog/$slug'
-      fullPath: '/blog/$slug'
-      preLoaderRoute: typeof BlogSlugRouteImport
+    '/services/': {
+      id: '/services/'
+      path: '/services'
+      fullPath: '/services/'
+      preLoaderRoute: typeof ServicesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/ads/invisible-grills': {
-      id: '/ads/invisible-grills'
-      path: '/ads/invisible-grills'
-      fullPath: '/ads/invisible-grills'
-      preLoaderRoute: typeof AdsInvisibleGrillsRouteImport
+    '/services/$service': {
+      id: '/services/$service'
+      path: '/services/$service'
+      fullPath: '/services/$service'
+      preLoaderRoute: typeof ServicesServiceRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/service-areas/$service/$location': {
